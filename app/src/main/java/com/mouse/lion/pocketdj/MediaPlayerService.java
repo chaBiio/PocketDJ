@@ -1,8 +1,10 @@
 package com.mouse.lion.pocketdj;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -11,10 +13,13 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by lionm on 1/13/2018.
@@ -35,6 +40,8 @@ public class MediaPlayerService extends Service
         }
     }
 
+    public static final String KEY_MEDIA_FILE = "media";
+
     // Binder given to clients
     private IBinder iBinder = new LocalBinder();
 
@@ -48,21 +55,45 @@ public class MediaPlayerService extends Service
 
     private AudioManager audioManager;
 
-    public static final String KEY_MEDIA_FILE = "media";
+    private ArrayList<Audio> audioList;
+
+    private int audioIndex = CacheUtils.INVALID_AUDIO_INDEX;
+
+    private Audio activeAudio;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // Perform one-time setup procedures
+        setupCallStateListener();
+        registerBecomingNoisyReciever();
+        registerPlayNewAudioReceiver();
+    }
 
     // The system calls this method when an activity requests the service be started
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            // An audio file is passed to the service through putExtra()
-            mediaFile = intent.getExtras().getString(KEY_MEDIA_FILE);
-        } catch (NullPointerException e) {
+//        try {
+//            // An audio file is passed to the service through putExtra()
+//            mediaFile = intent.getExtras().getString(KEY_MEDIA_FILE);
+//        } catch (NullPointerException e) {
+//            stopSelf();
+//        }
+
+        CacheUtils cacheUtils = new CacheUtils(getApplicationContext());
+        audioList = cacheUtils.loadAudios();
+        audioIndex = cacheUtils.loadAudioIndex();
+        if (audioIndex != CacheUtils.INVALID_AUDIO_INDEX && audioIndex < audioList.size()) {
+            activeAudio = audioList.get(audioIndex);
+        } else {
             stopSelf();
         }
 
         // Request audio focus
         if (!requestAudioFocus()) stopSelf(); else Log.d("mylog", "focus gained");
-        if (!TextUtils.isEmpty(mediaFile)) initMediaPlayer();
+//        if (!TextUtils.isEmpty(mediaFile)) initMediaPlayer();
+        if (audioIndex != CacheUtils.INVALID_AUDIO_INDEX) initMediaPlayer();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -74,6 +105,14 @@ public class MediaPlayerService extends Service
             mediaPlayer.release();
         }
         removeAudioFocus();
+
+        if (phoneStateListener != null) {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
+
+        unregisterReceiver(BECOMING_NOISY_RECEIVER);
+        unregisterReceiver(PLAY_NEW_AUDIO_RECEIVER);
+        new CacheUtils(getApplicationContext()).clearCachedAudioPlayList();
     }
 
     @Nullable
@@ -220,7 +259,8 @@ public class MediaPlayerService extends Service
 
         try {
             // Set the data source to the mediaFile location
-            mediaPlayer.setDataSource(mediaFile);
+//            mediaPlayer.setDataSource(mediaFile);
+            mediaPlayer.setDataSource(activeAudio.data);
         } catch(IOException e) {
             e.printStackTrace();
             stopSelf();
@@ -255,5 +295,76 @@ public class MediaPlayerService extends Service
             mediaPlayer.seekTo(resumePosition);
             mediaPlayer.start();
         }
+    }
+
+    // Becoming noisy
+    private final BroadcastReceiver BECOMING_NOISY_RECEIVER = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            pauseMedia();
+        }
+    };
+
+    private void registerBecomingNoisyReciever() {
+        IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+        registerReceiver(BECOMING_NOISY_RECEIVER, intentFilter);
+    }
+
+    // Handling incoming calls
+    private boolean ongoingCall = false;
+    private PhoneStateListener phoneStateListener;
+    private TelephonyManager telephonyManager;
+
+    private void setupCallStateListener() {
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                switch (state) {
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        if (mediaPlayer != null) {
+                            pauseMedia();
+                            ongoingCall = true;
+                        }
+                        break;
+
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        if (mediaPlayer != null) {
+                            if (ongoingCall) {
+                                ongoingCall = false;
+                                resumeMedia();
+                            }
+                        }
+                        break;
+                }
+            }
+        };
+
+        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+    }
+
+    // Handling a request to play a new track
+    private BroadcastReceiver PLAY_NEW_AUDIO_RECEIVER = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            audioIndex = new CacheUtils(getApplicationContext()).loadAudioIndex();
+            if (audioIndex != CacheUtils.INVALID_AUDIO_INDEX && audioIndex < audioList.size()) {
+                // index is in a valid range
+                activeAudio = audioList.get(audioIndex);
+            } else {
+                stopSelf();
+            }
+
+            // PLAY_NEW_AUDIO action received reset mediaPlayer to play the new audio
+            stopMedia();
+            mediaPlayer.reset();
+            initMediaPlayer();
+        }
+    };
+
+    private void registerPlayNewAudioReceiver() {
+        IntentFilter intentFilter = new IntentFilter(MainActivity.Broadcast_PLAY_NEW_AUDIO);
+        registerReceiver(PLAY_NEW_AUDIO_RECEIVER, intentFilter);
     }
 }
