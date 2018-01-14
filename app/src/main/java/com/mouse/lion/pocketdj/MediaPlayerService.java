@@ -48,7 +48,7 @@ public class MediaPlayerService extends Service
 
     private AudioManager audioManager;
 
-    private static final String KEY_MEDIA_FILE = "media";
+    public static final String KEY_MEDIA_FILE = "media";
 
     // The system calls this method when an activity requests the service be started
     @Override
@@ -61,7 +61,7 @@ public class MediaPlayerService extends Service
         }
 
         // Request audio focus
-        if (!requestAudioFocus()) stopSelf();
+        if (!requestAudioFocus()) stopSelf(); else Log.d("mylog", "focus gained");
         if (!TextUtils.isEmpty(mediaFile)) initMediaPlayer();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -121,6 +121,7 @@ public class MediaPlayerService extends Service
     @Override
     public void onPrepared(MediaPlayer mp) {
         // Invoked when the media source is ready for playback.
+        playMedia();
     }
 
     @Override
@@ -132,15 +133,18 @@ public class MediaPlayerService extends Service
     @Override
     public void onAudioFocusChange(int focusChange) {
         // Invoked when the audio focus of the system is update.
+        Log.d("mylog","FOCUS CHANGED => ???");
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_GAIN:
+                Log.d("mylog","FOCUS CHANGED => GAIN");
                 // resume playback
                 if (mediaPlayer == null) initMediaPlayer();
-                else if ((!mediaPlayer.isPlaying())) mediaPlayer.start();
+                if ((!mediaPlayer.isPlaying())) mediaPlayer.start();
                 mediaPlayer.setVolume(1.0f, 1.0f);
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
+                Log.d("mylog","FOCUS CHANGED => LOSS");
                 // Lost focus for an unbounded amount of time;
                 // stop playback and release media player
                 if (mediaPlayer.isPlaying()) mediaPlayer.stop();
@@ -149,12 +153,14 @@ public class MediaPlayerService extends Service
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                Log.d("mylog","FOCUS CHANGED => TRANSIENT");
                 // Lost focus for a short time, but we have to stop playback.
                 // We don't release the media player because playback is likely to resume
                 if (mediaPlayer.isPlaying()) mediaPlayer.pause();
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                Log.d("mylog","FOCUS CHANGED => LOSS TRANSIENT CAN DUCK");
                 // Lost focus for a short time, but it's ok to keep playback
                 // at an attenuated level
                 if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(0.1f, 0.1f);
@@ -177,7 +183,7 @@ public class MediaPlayerService extends Service
                             .setUsage(AudioAttributes.USAGE_MEDIA)
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .build())
-                    .setFocusGain(AudioManager.AUDIOFOCUS_GAIN).build());
+                    .build());
         }
 
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
@@ -224,6 +230,7 @@ public class MediaPlayerService extends Service
     }
 
     private void playMedia() {
+        Log.d("mylog", "playMedia!!!!!");
         if (!mediaPlayer.isPlaying()) {
             mediaPlayer.start();
         }
