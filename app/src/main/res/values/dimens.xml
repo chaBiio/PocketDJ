@@ -1,3 +1,5 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <!-- Z-axis elevations -->
+    <dimen name="z_app_bar">4dp</dimen>
 </resources>
