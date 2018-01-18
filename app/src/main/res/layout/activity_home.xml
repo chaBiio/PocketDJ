@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mouse.lion.pocketdj.ui.HomeActivity"
-    android:background="@color/primary"
-    android:id="@+id/fl_root">
+    android:background="@color/primary">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:actionBarSize"
-        app:title="@string/app_name"
-        app:titleTextColor="@color/text_primary_light"
-        android:background="@color/primary"/>
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/z_app_bar_home">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:actionBarSize"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/text_primary_light"
+            android:background="@color/primary"
+            app:layout_scrollFlags="scroll"/>
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/grid"
@@ -22,7 +27,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
-        android:clipToPadding="false"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -30,4 +35,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"/>
-</FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

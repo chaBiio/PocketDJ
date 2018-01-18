@@ -8,9 +8,8 @@ public class ResUtils {
 
     private ResUtils() {}
 
-    public int getStatusBarHeight(Context context) {
+    public static int getStatusBarHeight(Context context) {
         int height;
-
         Resources myResources = context.getResources();
         int idStatusBarHeight = myResources.getIdentifier(
                 "status_bar_height", "dimen", "android");
@@ -24,7 +23,7 @@ public class ResUtils {
         return height;
     }
 
-    public int getActionBarSize(Context context) {
+    public static int getActionBarHeight(Context context) {
         TypedArray styledAttributes = context.getTheme()
                 .obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
         int actionBarSize = (int) styledAttributes.getDimension(0, 0);

@@ -1,5 +1,17 @@
 <resources>
-    <string name="app_name">PocketDJ</string>
+    <string name="app_name">Pocket DJ</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
+
+    <!-- subheaders -->
+    <string name="subheader_title_library">Library</string>
+
+    <!-- tiles in home -->
+    <string name="tile_name_songs">SONGS</string>
+    <string name="tile_name_albums">ALBUMS</string>
+    <string name="tile_name_artists">ARTISTS</string>
+    <string name="tile_name_playlists">PLAYLISTS</string>
+    <string name="tile_name_genres">GENRES</string>
+    <string name="tile_name_streaming">STREAMING</string>
+
 </resources>

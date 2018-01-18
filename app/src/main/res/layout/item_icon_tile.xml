@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mouse.lion.pocketdj.ui.widget.SquareCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/blue"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="2dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/tile_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_album"
+            android:layout_centerInParent="true"
+            android:tint="@color/light_icon"/>
+        <TextView
+            android:id="@+id/tile_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary_light"
+            android:text="ALUBMS"
+            android:textAlignment="center"
+            android:paddingTop="8dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/roboto_mono_medium"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+</com.mouse.lion.pocketdj.ui.widget.SquareCardView>

@@ -1,5 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <!-- spaces between items in recycler-view -->
+    <dimen name="s_icon_tile_home">8dp</dimen>
     <!-- Z-axis elevations -->
-    <dimen name="z_app_bar">4dp</dimen>
+    <dimen name="z_app_bar_home">0dp</dimen>
 </resources>
