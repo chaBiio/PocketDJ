@@ -7,11 +7,11 @@
     <string name="subheader_title_library">Library</string>
 
     <!-- tiles in home -->
-    <string name="tile_name_songs">SONGS</string>
-    <string name="tile_name_albums">ALBUMS</string>
-    <string name="tile_name_artists">ARTISTS</string>
-    <string name="tile_name_playlists">PLAYLISTS</string>
-    <string name="tile_name_genres">GENRES</string>
-    <string name="tile_name_streaming">STREAMING</string>
+    <string name="tile_name_songs">Songs</string>
+    <string name="tile_name_albums">Albums</string>
+    <string name="tile_name_artists">Artists</string>
+    <string name="tile_name_playlists">Playlists</string>
+    <string name="tile_name_genres">Genres</string>
+    <string name="tile_name_streaming">Straming</string>
 
 </resources>

@@ -81,20 +81,23 @@ public class HomeActivity extends AppCompatActivity {
                 new IconTileAdapter.IconTile(R.drawable.ic_settings_input_antenna, R.string.tile_name_streaming));
         mergeAdapter.addAdapter(iconTileAdapter);
         final int spaceBtwTiles = getResources().getDimensionPixelSize(R.dimen.s_icon_tile_home);
+        final int horSpacePerTile = spaceBtwTiles * (MAX_GRID_SPAN_COUNT - 1) / MAX_GRID_SPAN_COUNT;
         final int spaceBtwTilesDiv2 = spaceBtwTiles / 2;
         mergeSpaceDecoration.addLocalDecoration(iconTileAdapter, new LocalMergeSpaceDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, int localPosition, View view, RecyclerView parent, RecyclerView.State state) {
+                // The following codes expects 'MAX_GRID_SPAN_COUNT = 3'
                 int mod = localPosition % MAX_GRID_SPAN_COUNT;
                 outRect.top = outRect.bottom = spaceBtwTilesDiv2;
                 if (mod == 0) {
-                    outRect.left = spaceBtwTiles;
-                    outRect.right = spaceBtwTilesDiv2;
+                    // tiles of the left column
+                    outRect.right = horSpacePerTile;
                 } else if (mod == MAX_GRID_SPAN_COUNT - 1) {
-                    outRect.left = spaceBtwTilesDiv2;
-                    outRect.right = spaceBtwTiles;
+                    // tiles of the right column
+                    outRect.left = horSpacePerTile;
                 } else {
-                    outRect.left = outRect.right = spaceBtwTilesDiv2;
+                    // tiles of the center horizontal column
+                    outRect.left = outRect.right = horSpacePerTile / 2;
                 }
             }
         });
