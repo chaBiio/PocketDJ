@@ -1,7 +1,12 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <!-- spaces between items in recycler-view -->
+    <dimen name="song_card_height">72dp</dimen>
+    <dimen name="song_card_artwork_size">40dp</dimen>
+    <dimen name="artwork_tile_footer_height">72dp</dimen>
+    <!-- spaces for items in recycler-view -->
     <dimen name="s_icon_tile_home">8dp</dimen>
+    <dimen name="s_artwork_tile_home">6dp</dimen>
+    <dimen name="s_song_card_each_side">16dp</dimen>
     <!-- Z-axis elevations -->
     <dimen name="z_app_bar_home">0dp</dimen>
 </resources>

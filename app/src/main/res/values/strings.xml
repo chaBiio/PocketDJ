@@ -5,6 +5,10 @@
 
     <!-- subheaders -->
     <string name="subheader_title_library">Library</string>
+    <string name="subheader_title_favorite_albums">Favorite - Albums -</string>
+    <string name="subheader_title_favorite_songs">Favorite - Songs -</string>
+    <string name="subheader_title_recent_albums">Recent - Albums -</string>
+    <string name="subheader_title_recent_songs">Recent - Songs -</string>
 
     <!-- tiles in home -->
     <string name="tile_name_songs">Songs</string>

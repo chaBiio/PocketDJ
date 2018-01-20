@@ -1,5 +1,6 @@
 package com.mouse.lion.pocketdj.utils;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.mouse.lion.pocketdj.BuildConfig;
@@ -25,6 +26,12 @@ public class Logger {
         }
     }
 
+    public static void v(@NonNull String format, Object... args) {
+        if (IS_DEBUG) {
+            Log.v(TAG, getMetaInfo() + String.format(format, args));
+        }
+    }
+
     public static void d(){
         if(IS_DEBUG){
             Log.d(TAG, getMetaInfo());
@@ -34,6 +41,12 @@ public class Logger {
     public static void d(String message){
         if(IS_DEBUG){
             Log.d(TAG, getMetaInfo() + null2str(message));
+        }
+    }
+
+    public static void d(@NonNull String format, Object... args) {
+        if (IS_DEBUG) {
+            Log.d(TAG, getMetaInfo() + String.format(format, args));
         }
     }
 
@@ -49,9 +62,21 @@ public class Logger {
         }
     }
 
+    public static void i(@NonNull String format, Object... args) {
+        if (IS_DEBUG) {
+            Log.i(TAG, getMetaInfo() + String.format(format, args));
+        }
+    }
+
     public static void w(String message){
         if(IS_DEBUG){
             Log.w(TAG, getMetaInfo() + null2str(message));
+        }
+    }
+
+    public static void w(@NonNull String format, Object... args) {
+        if (IS_DEBUG) {
+            Log.w(TAG, getMetaInfo() + String.format(format, args));
         }
     }
 
@@ -68,6 +93,12 @@ public class Logger {
     public static void e(String message){
         if(IS_DEBUG){
             Log.e(TAG, getMetaInfo() + null2str(message));
+        }
+    }
+
+    public static void e(@NonNull String format, Object... args) {
+        if (IS_DEBUG) {
+            Log.e(TAG, getMetaInfo() + String.format(format, args));
         }
     }
 
@@ -114,6 +145,6 @@ public class Logger {
         final String simpleClassName = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
         final String methodName = element.getMethodName();
         final int lineNumber = element.getLineNumber();
-        return "[" + simpleClassName + "#" + methodName + ":" + lineNumber + "]";
+        return "[" + simpleClassName + "#" + methodName + ":" + lineNumber + "] ";
     }
 }
